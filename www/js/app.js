@@ -73,15 +73,31 @@ angular.module('shopAdvisor', ['ionic'])
     return makeSlices; 
   }]
 )
-.controller('shopCtrl', function($scope, $ionicSideMenuDelegate, Categories, $ionicModal){
-  $scope.categories = ['Shirt','T-Shirt','Pants'];
+.config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider
+    .state('home', {
+      url: '/',
+      controller: 'shopCtrl',
+      templateUrl: 'home.html'
+    })
+    .state('item', {
+      url: '/item/:id',
+      controller: 'itemCtrl',
+      templateUrl: 'item.html'
+    });
+
+  $urlRouterProvider.otherwise('/');
+})
+.controller('shopCtrl', function($scope, $rootScope, $ionicSideMenuDelegate, Categories, $ionicModal){
+  $rootScope.categories = ['Shirt','T-Shirt','Pants'];
   Categories.save($scope.categories);
   // Load or initialize projects
   //$scope.projects = Projects.all();
   // Grab the last active, or the first project
   $scope.activeCategory = $scope.categories[Categories.getLastActiveIndex()];
 
-  $scope.products = [];
+  $rootScope.products = [];
   $scope.products = createSampleProducts();
   $scope.sortOptions = [
     {id:"0",name:"Most popular"},
@@ -92,30 +108,44 @@ angular.module('shopAdvisor', ['ionic'])
   ];
 
   /* MODAL START*/
+  //sort modal
   $ionicModal.fromTemplateUrl('sort-modal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    }).then(function(modal) {
-      $scope.modal = modal;
-    });
-    $scope.openSortModal = function() {
-      $scope.modal.show();
+    id: '1',
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.oModal1 = modal;
+  });
+  //filter-modal
+  $ionicModal.fromTemplateUrl('filter-modal.html', {
+    id: '2',
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.oModal2 = modal;
+  });
+ 
+  $scope.openModal = function(index) {
+      if (index == 1) $scope.oModal1.show();
+      else $scope.oModal2.show();
     };
-    $scope.closeSortModal = function() {
-      $scope.modal.hide();
-    };
-    //Cleanup the modal when we're done with it!
-    $scope.$on('$destroy', function() {
-      $scope.modal.remove();
-    });
-    // Execute action on hide modal
-    $scope.$on('modal.hidden', function() {
-      // Execute action
-    });
-    // Execute action on remove modal
-    $scope.$on('modal.removed', function() {
-      // Execute action
-    });
+
+  $scope.closeModal = function(index) {
+    if (index == 1) $scope.oModal1.hide();
+    else $scope.oModal2.hide();
+  };
+  //Cleanup the modal when we're done with it!
+  $scope.$on('$destroy', function() {
+    $scope.modal.remove();
+  });
+  // Execute action on hide modal
+  $scope.$on('modal.hidden', function() {
+    // Execute action
+  });
+  // Execute action on remove modal
+  $scope.$on('modal.removed', function() {
+    // Execute action
+  });
   /* MODAL END*/
 
 
@@ -129,9 +159,13 @@ angular.module('shopAdvisor', ['ionic'])
     Categories.setLastActiveIndex(index);
     $ionicSideMenuDelegate.toggleLeft(false);
   };
+  $scope.selectSortOption = function(){
+    $scope.closeModal(1);
+  }
   function createSampleProducts(){
     var products = [];
     var product = {
+      id:1,
       name: "long shirt",
       brand: "Nike",
       price: 100,
@@ -141,6 +175,7 @@ angular.module('shopAdvisor', ['ionic'])
     }
     products.push(product);
     product = {
+      id:2,
       name: "long shirt 2",
       brand: "Nike",
       price: 100,
@@ -150,6 +185,7 @@ angular.module('shopAdvisor', ['ionic'])
     }
     products.push(product);
     product = {
+      id:3,
       name: "long shirt 3",
       brand: "Nike",
       price: 100,
@@ -159,6 +195,7 @@ angular.module('shopAdvisor', ['ionic'])
     }
     products.push(product);
     product = {
+      id:4,
       name: "long shirt 4",
       brand: "Nike",
       price: 100,
@@ -168,6 +205,7 @@ angular.module('shopAdvisor', ['ionic'])
     }
     products.push(product);
     product = {
+      id:5,
       name: "long shirt 5",
       brand: "Nike",
       price: 100,
@@ -179,5 +217,19 @@ angular.module('shopAdvisor', ['ionic'])
     return products;
   }
 })
-
+.controller('itemCtrl', function ($scope, $rootScope, $stateParams) {
+  var id = $stateParams.id;
+  $scope.selectedProduct;
+  for (var i = 0; i < $scope.products.length; i++) {
+    selectedProduct = $scope.products[i];
+    if(id == selectedProduct.id){
+      break;
+    }
+  }
+  $scope.name = selectedProduct.name;
+  $scope.brand = selectedProduct.brand;
+  $scope.image = selectedProduct.image;
+  $scope.description = selectedProduct.description;
+  $scope.price = selectedProduct.price;
+})
 
