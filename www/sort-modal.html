@@ -1,0 +1,13 @@
+<ion-modal-view >
+  <ion-header-bar>
+    <h1 class="title">Sort</h1>
+    <button class="button button-clear button-positive" ng-click="closeSortModal()">Cancel</button>
+  </ion-header-bar>
+  <ion-content>
+    <ion-list>
+		<ion-item ng-repeat="option in sortOptions" >
+			{{option.name}}
+		</ion-item>
+	</ion-list>
+  </ion-content>
+</ion-modal-view>
