@@ -189,8 +189,13 @@ angular.module('shopAdvisor', ['ionic'])
 		products.push(product);
 		return products;
 	}
-	function Category(name, products){
 
+	function Category(name, products){
+		this.name = name;
+		this.products = products;
+	}
+	function createSampleCategories(){
+		
 	}
 })
 .controller('itemCtrl', function ($scope, $rootScope, $stateParams) {
