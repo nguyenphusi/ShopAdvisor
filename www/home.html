@@ -1,5 +1,4 @@
-
-<ion-view title="Home">
+<ion-view title="{{activeCategory.name}}" >
 	<ion-nav-buttons side="left">
 		<button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
 	</ion-nav-buttons>
@@ -17,7 +16,7 @@
 			</div>
 		</div> -->
 		
-		<div class="row" ng-repeat="row in products | inSlicesOf:2"> 
+		<div class="row" ng-repeat="row in activeCategory.products | inSlicesOf:2"> 
 			<div class="col col-50" ng-repeat="product in row" >
 				<!-- /item/:brand/:name/:price/:image/:description-->
 				<ion-item href="#/item/{{product.id}}">

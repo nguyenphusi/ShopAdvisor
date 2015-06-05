@@ -21,21 +21,15 @@ angular.module('shopAdvisor', ['ionic'])
 	return {
 		all: function() {
 			var categoryString = window.localStorage['categories'];
-			if(categoryString) {
+			if(!categoryString) {
 				return angular.fromJson(categoryString);
 			}
+      
 			return [];
 		},
 		save: function(categories) {
 			window.localStorage['categories'] = angular.toJson(categories);
 		},
-	/*  newProject: function(projectTitle) {
-			// Add a new project
-			return {
-			title: projectTitle,
-			tasks: []
-			};
-		},*/
 		getLastActiveIndex: function() {
 			return parseInt(window.localStorage['lastActiveCategory']) || 0;
 		},
@@ -77,6 +71,7 @@ angular.module('shopAdvisor', ['ionic'])
 
 	$stateProvider
 		.state('home', {
+      cache: false,
 			url: '/',
 			controller: 'shopCtrl',
 			templateUrl: 'home.html'
@@ -89,8 +84,8 @@ angular.module('shopAdvisor', ['ionic'])
 
 	$urlRouterProvider.otherwise('/');
 })
-.controller('shopCtrl', function($scope, $rootScope, $ionicSideMenuDelegate, Categories, $ionicModal){
-	$rootScope.categories = ['Shirt','T-Shirt','Pants'];
+.controller('shopCtrl', function($scope, $rootScope, $ionicSideMenuDelegate, Categories, $ionicModal, $state, $stateParams, $window){
+	$rootScope.categories = createSampleCategories();
 	Categories.save($scope.categories);
 	// Load or initialize projects
 	//$scope.projects = Projects.all();
@@ -98,7 +93,7 @@ angular.module('shopAdvisor', ['ionic'])
 	$scope.activeCategory = $scope.categories[Categories.getLastActiveIndex()];
 
 	$rootScope.products = [];
-	$scope.products = createSampleProducts();
+	$scope.products = $scope.activeCategory.products;
 	$scope.sortOptions = [
 		{id:"0",name:"Most popular"},
 		{id:"1",name:"From A to Z"},
@@ -146,6 +141,7 @@ angular.module('shopAdvisor', ['ionic'])
 	$scope.$on('modal.removed', function() {
 		// Execute action
 	});
+
 	/* MODAL END*/
 
 
@@ -155,9 +151,23 @@ angular.module('shopAdvisor', ['ionic'])
 	};
 	// Called to select the given category
 	$scope.selectCategory = function(category, index) {
+    var isSelectNew;
+    if(category.name != $scope.activeCategory.name){
+      isSelectNew = true;
+    }
+    
 		$scope.activeCategory = category;
 		Categories.setLastActiveIndex(index);
+    
 		$ionicSideMenuDelegate.toggleLeft(false);
+    
+    if(isSelectNew){
+      //$state.go($state.current, {}, {reload: true});
+      $window.location.reload(true);
+      //$state.go('home', {}, {reload: true});
+    }
+    
+
 	};
 	$scope.selectSortOption = function(){
 		$scope.closeModal(1);
@@ -171,31 +181,83 @@ angular.module('shopAdvisor', ['ionic'])
 		this.description = description;
 		this.size = size;
 	}
-	function createSampleProducts(){
+	function createShirtProducts(){
 		var products = [];
 		var product;
 
-		product = new Product(1, "long shirt", "Nike", 100, "img/ionic.png", "High quality long shirt from Nike!", "XL");
+		product = new Product(1, "Blue Shirt", "Viettien", 200, "img/shirt_blue.jpg", "High quality shirt!", "XL");
 		products.push(product);
-		product = new Product(2, "long shirt 2", "Nike", 100, "img/ionic.png", "High quality long shirt from Nike!", "XL");
+		product = new Product(2, "Dark Blue Shirt", "Viettien", 100, "img/shirt_blue_2.png", "Beautiful shirt!", "XL");
 		products.push(product);
-		product = new Product(3, "long shirt 3", "Nike", 100, "img/ionic.png", "High quality long shirt from Nike!", "XL");
+		product = new Product(3, "Black Shirt", "N.L", 110, "img/shirt_black.jpg", "Beautiful shirt!", "XL");
 		products.push(product);
-		product = new Product(4, "long shirt 4", "Nike", 100, "img/ionic.png", "High quality long shirt from Nike!", "XL");
+		product = new Product(4, "White Shirt", "N.L", 140, "img/shirt_white.jpg", "High quality shirt!", "XL");
 		products.push(product);
-		product = new Product(5, "long shirt 5", "Nike", 100, "img/ionic.png", "High quality long shirt from Nike!", "XL");
+		product = new Product(5, "Gray Shirt", "N.L", 150, "img/shirt_gray.jpg", "Beautiful shirt!", "XL");
 		products.push(product);
-		product = new Product(6, "Black shirt", "Adidas", 200, "img/ionic.png", "Adidas shirt", "XL");
+		product = new Product(6, "Red Shirt", "Viettien", 210, "img/shirt_red.jpg", "High quality shirt!", "XL");
 		products.push(product);
 		return products;
 	}
+  function createPantProducts(){
+    var products = [];
+    var product;
 
-	function Category(name, products){
+    product = new Product(1, "Brown Pant", "Viettien", 200, "img/pant1.jpg", "High quality pant!", "XL");
+    products.push(product);
+    product = new Product(2, "Black Pant", "N.L", 219, "img/pant2.jpg", "Beautiful pant!", "XL");
+    products.push(product);
+    product = new Product(3, "Light Brown Pant", "Viettien", 229, "img/pant3.jpg", "Beautiful pant!", "XL");
+    products.push(product);
+    product = new Product(4, "Gray Pant", "Viettien", 399, "img/pant4.jpg", "High quality pant!", "XL");
+    products.push(product);
+    product = new Product(5, "Dark Brown Pant", "N.L", 150, "img/pant5.png", "High quality pant!", "XL");
+    products.push(product);
+    product = new Product(6, "Yellow Pant", "N.L", 50, "img/pant6.jpg", "Beautiful", "XL");
+    products.push(product);
+    return products;
+  }
+  function createHatProducts(){
+    var products = [];
+    var product;
+
+    product = new Product(1, "Red Hat", "Melin", 50, "img/hat1.jpg", "Beautiful hat!", "XL");
+    products.push(product);
+    product = new Product(2, "Light Brown Hat", "Diamond", 40, "img/hat2.jpg", "Cheap hat!", "XL");
+    products.push(product);
+    product = new Product(3, "Gray Brown Hat", "Diamond", 60, "img/hat3.jpg", "High quality hat!", "XL");
+    products.push(product);
+    product = new Product(4, "Dark Brown Hat", "Melin", 45, "img/hat4.png", "High quality hat!", "XL");
+    products.push(product);
+    product = new Product(5, "Fedora", "Son", 53, "img/hat5.jpg", "High quality hat!", "XL");
+    products.push(product);
+    product = new Product(6, "Charlie's Hat", "Charlie", 999, "img/hat6.jpg", "Charlie Chaplin's hat", "XL");
+    products.push(product);
+    return products;
+  }
+
+	function Category(id, name, products){
+    this.id = id;
 		this.name = name;
 		this.products = products;
 	}
 	function createSampleCategories(){
-		
+		var categories = [];
+    var category;
+    var products = [];
+
+    products = createShirtProducts();
+    category = new Category(1, "Shirt", products);
+    categories.push(category);
+    products = createPantProducts();
+    category = new Category(2, "Pant", products);
+    categories.push(category);
+    products = createHatProducts();
+    category = new Category(3, "Hat", products);
+    categories.push(category);
+
+    return categories;
+
 	}
 })
 .controller('itemCtrl', function ($scope, $rootScope, $stateParams) {
