@@ -1,30 +1,30 @@
 
 <ion-view title="Home">
-  <ion-nav-buttons side="left">
-    <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
-  </ion-nav-buttons>
-  <ion-content>
-    <!-- <div class="row">
-      <div class="col col-50">
-        <button class="button button-full button-light" ng-click="openModal(1)">
-          Sort
-        </button>
-      </div>
-      <div class="col col-50">
-        <button class="button button-full button-light" ng-click="openModal(2)">
-          Filter
-        </button>
-      </div>
-    </div> -->
-    
-    <div class="row" ng-repeat="row in products | inSlicesOf:2"> 
-      <div class="col col-50" ng-repeat="product in row" >
-        <!-- /item/:brand/:name/:price/:image/:description-->
-        <ion-item href="#/item/{{product.id}}">
-          <img ng-src="{{product.image}}" width="100px" height="150px" href="#/item"><br />
-          {{product.brand}}<br />{{product.name}}<br /><b>{{product.price}} USD</b><br />
-        </ion-item>
-      </div>
-    </div>
-  </ion-content>
+	<ion-nav-buttons side="left">
+		<button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+	</ion-nav-buttons>
+	<ion-content>
+		<!-- <div class="row">
+			<div class="col col-50">
+				<button class="button button-full button-light" ng-click="openModal(1)">
+					Sort
+				</button>
+			</div>
+			<div class="col col-50">
+				<button class="button button-full button-light" ng-click="openModal(2)">
+					Filter
+				</button>
+			</div>
+		</div> -->
+		
+		<div class="row" ng-repeat="row in products | inSlicesOf:2"> 
+			<div class="col col-50" ng-repeat="product in row" >
+				<!-- /item/:brand/:name/:price/:image/:description-->
+				<ion-item href="#/item/{{product.id}}">
+					<img ng-src="{{product.image}}" width="100px" height="150px" href="#/item"><br />
+					{{product.brand}}<br />{{product.name}}<br /><b>{{product.price}} USD</b><br />
+				</ion-item>
+			</div>
+		</div>
+	</ion-content>
 </ion-view>
